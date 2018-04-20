@@ -80,7 +80,7 @@ class game_lus():
 
             if len(self.handler.random_larticles) <= self.handler.random_larticles_amount and not checking:
                 checking = True
-                p = subprocess.Popen('python Create_random_larticles.pyw ' + str(self.handler.random_larticles_amount))
+                p = subprocess.Popen('python Create_random_larticles.pyw ' + str(self.handler.random_larticles_amount),creationflags=0x08000000)
 
 
 
