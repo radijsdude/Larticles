@@ -53,6 +53,3 @@ It took madness and time to make this, it will take some madness and time to com
 The Neuron.py file is a gift, it is a script for a feed forward neuron with sigmoid scaling and backwards propagation, tho the backwards propagation is not used in the rest of the program because it kills the framerate, a simple example of it is in the test function.
 I made this because the autistic kid in me likes to look at it. Have fun.
 
-
-Version 0.1 errors:
-buffer spawns black screen when starting subprocess
