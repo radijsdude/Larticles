@@ -1,6 +1,8 @@
 # Living-Particles
 An attempt at an artificial life screensaver.
 
+Version 0.1
+
 How this should be Read:
 1) Neuron.py
 2) Brain.py
@@ -48,3 +50,7 @@ in Pygame.py i start a subprocess of Create_random_larticles.py, when using pyin
 It took madness and time to make this, it will take some madness and time to comment the code.
 The Neuron.py file is a gift, it is a script for a feed forward neuron with sigmoid scaling and backwards propagation, tho the backwards propagation is not used in the rest of the program because it kills the framerate, a simple example of it is in the test function.
 I made this because the autistic kid in me likes to look at it. Have fun.
+
+
+Version 0.1 errors:
+buffer spawns black screen when starting subprocess
