@@ -33,6 +33,8 @@ right mouse click: unselect
 
 scroll: zoom (works better when paused)
 
+End: return to original zoom
+
 arrows: move the grid (works better when paused)
 
 k: kill selected larticle
