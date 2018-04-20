@@ -19,6 +19,9 @@ How this should be Run:
 
 Please tell me if something goes wrong.
 
+Some problems i have in making this a .exe:
+in Pygame.py i start a subprocess of Create_random_larticles.py, when using pyinstaller to compile to a .exe, this file will not be converted since the only way i know is to start the subprocess with an os command 'python Create_random_larticles.py' the seperate process is needed to save alot of framerate. so if someone knows how to fix this so i can make it into an exe.
+
 It took madness and time to make this, it will take some madness and time to comment the code.
 The Neuron.py file is a gift, it is a script for a feed forward neuron with sigmoid scaling and backwards propagation, tho the backwards propagation is not used in the rest of the program because it kills the framerate, a simple example of it is in the test function.
 I made this because the autistic kid in me likes to look at it. Have fun.
