@@ -18,16 +18,16 @@ How this should be Run:
 5) You can set the initial gridsize in the Pygame.py file
 
 Thze Commands:
-Escape: stop!!!
-Home: Restart the Big Bang
-Insert: Pause
-left mouse click: select the clicked larticle and or neuron
-right mouse click: unselect
-scroll: zoom (works better when paused)
-arrows: move the grid (works better when paused)
-k : kill selected larticle
-PageDown: show more (talking = purple mouth, state = colour brightness, giving health = white circle)
-PageUp: show nothing
+Escape) stop!!!
+Home) Restart the Big Bang
+Insert) Pause
+left mouse click) select the clicked larticle and or neuron
+right mouse click) unselect
+scroll) zoom (works better when paused)
+arrows) move the grid (works better when paused)
+k) kill selected larticle
+PageDown) show more (talking = purple mouth, state = colour brightness, giving health = white circle)
+PageUp) show nothing
 
 
 Please tell me if something goes wrong.
