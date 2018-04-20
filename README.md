@@ -12,7 +12,7 @@ How this should be Read:
 
 How this should be Run:
 1) Have python 3, (I made this in 3.5).
-2) Install pygame on python with python pip install pygame .
+2) Install pygame and pickle on python with python pip install pygame and python pip install pickle.
 3) All files need to be in the same folder.
 4) Run Pygame.py.
 5) You can set the initial gridsize in the Pygame.py file
