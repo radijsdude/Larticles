@@ -20,5 +20,5 @@ How this should be Run:
 Please tell me if something goes wrong.
 
 It took madness and time to make this, it will take some madness and time to comment the code.
-The Neuron.py file is a gift, I use it to make the larticles even more smart but it kills the framerate, it is a script for a feed forward neuron with sigmoid scaling and backwards propagation, tho the backwards propagation is not used in the rest of the program.
+The Neuron.py file is a gift, it is a script for a feed forward neuron with sigmoid scaling and backwards propagation, tho the backwards propagation is not used in the rest of the program because it kills the framerate, a simple example of it is in the test function.
 I made this because the autistic kid in me likes to look at it. Have fun.
