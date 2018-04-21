@@ -1,5 +1,6 @@
 # Living-Particles
 An attempt at an artificial life screensaver.https://www.youtube.com/watch?v=eqQlqO-STxM
+This system is stupendesly complex and random, dependent on the initial condictions etc, so not every run may be interesting to everyone, have patience, madness will spawn, or you can just restart the run.
 
 Version 0.1
 
