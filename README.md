@@ -2,6 +2,10 @@
 An attempt at an artificial life screensaver.https://www.youtube.com/watch?v=eqQlqO-STxM
 This system is stupendesly complex and random, dependent on the initial condictions etc, so not every run may be interesting to everyone, have patience, madness will spawn, or you can just restart the run.
 
+Expanded USER FRIENDLY version https://github.com/radijsdude/Larticles
+
+This is a simplification of the source code of the Larticles project.
+
 Version 0.1
 
 How this should be Read:
