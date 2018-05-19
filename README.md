@@ -60,7 +60,9 @@ Feel free to make this better faster stronger and show me when you come up with 
 Please tell me if something goes wrong. I've run this for days without crashes and other errors.
 
 
-Some problems i have in making this a .exe:
+Fixed: Some problems i have in making this a .exe:
 in Pygame.py i start a subprocess of Create_random_larticles.py, when using pyinstaller to compile to a .exe, this file will not be converted since the only way i know is to start the subprocess with an os command 'python Create_random_larticles.py' the seperate process is needed to save alot of framerate. so if someone knows how to fix this so i can make it into an exe.
 There is also sometimes a random doubling of framerate and I have no idea what is causing this.
 
+Fix:
+compile create_random_larticles.py to an .exe then in pygame.py subprocess call create_random_larticles.exe instead of .py and then compile pygame.py
