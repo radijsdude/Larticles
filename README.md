@@ -4,6 +4,8 @@ This system is stupendesly complex and random, dependent on the initial condicti
 
 Expanded USER FRIENDLY version https://github.com/radijsdude/Larticles
 
+https://www.facebook.com/Larticles-2052720745049482
+
 This is a simplification of the source code of the Larticles project.
 
 Version 0.1
