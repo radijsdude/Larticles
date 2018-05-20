@@ -66,15 +66,15 @@ class game_lus():
         checking = False
         while not stop:
 
-            self.memory.append(len(self.handler.larticles))
+            ##self.memory.append(len(self.handler.larticles))
 
 
-            if len(self.memory) > 100:
-                self.memory = self.memory[0:100]
-            if len(self.memory) > 30:
-                s = set(self.memory)
-                if len(s) <= 1:
-                    self.handler.initialize()
+            ##if len(self.memory) > 100:
+                ##self.memory = self.memory[0:100] <= the ridiculous part :p
+            ##if len(self.memory) > 30:
+                ##s = set(self.memory)
+                ##if len(s) <= 1:
+                    ##self.handler.initialize()
 
 
 
