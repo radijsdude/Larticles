@@ -5,6 +5,7 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = '%i,%i' % (0, 30)
 import pygame
 import pickle
 from Simulation import Simulation
+from constants import *
 
 pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 12)
@@ -487,7 +488,7 @@ class Main():
 
 
         pygame.init()
-        self.display = pygame.display.set_mode([1920,1020],pygame.RESIZABLE)
+        self.display = pygame.display.set_mode([constant_screensize_x,constant_screensize_y],pygame.RESIZABLE)
         pygame.display.set_caption('Larticles')
         self.clock = pygame.time.Clock()
 

@@ -61,6 +61,8 @@ def recalc_blit(x, y, gx, gy):
         dy = constant_grid_size + dy
     elif dy >= constant_grid_size:
         dy = dy - constant_grid_size
+    dx += 1
+    dy += 1
     return dx, dy
 
 
@@ -123,7 +125,8 @@ def Neuron_disconnect(neuron, name):
         neuron.dendrites.pop(name)
 
 
-def Neuron_test_connection(neuron, n):
+def Neuron_test_connection(neuron, connectiondepth):
+    n = connectiondepth
     n -= 1
     r = True
     if n >= 0:
@@ -137,8 +140,8 @@ def Neuron_test_connection(neuron, n):
     return r
 
 
-def sigmoid(potential, d=False):
-    if not d:
+def sigmoid(potential, derivative=False):
+    if not derivative:
         if potential > -100:
             return 1 / (1 + math.exp(-potential))
         else:
@@ -161,10 +164,10 @@ def Neuron_add_error(neuron, error):
 
 
 def Neuron_correct(neuron):
-    gradient = neuron.error * sigmoid(neuron.potential, True)
+    gradient = neuron.error * sigmoid(neuron.potential, derivative=True)
     for dendrite in neuron.dendrites:
-        dw = neuron_learningrate * neuron.dendrites[dendrite].neuron.potential * gradient
-        neuron.dendrites[dendrite].weight += dw
+        delta_weight = neuron_learningrate * neuron.dendrites[dendrite].neuron.potential * gradient
+        neuron.dendrites[dendrite].weight += delta_weight
         Neuron_add_error(neuron.dendrites[dendrite].neuron, gradient * neuron.dendrites[dendrite].weight)
         Neuron_correct(neuron.dendrites[dendrite].neuron)
     neuron.error = 0
@@ -240,6 +243,7 @@ class Body():
         self.clock = 0
 
         self.dna_saved = None
+        self.dna_saved_name = None
         self.dna_choose = 'self'
 
         self.eating = False
@@ -308,6 +312,7 @@ class Body():
         else:
             length = -1
         properties['dna saved length'] = length
+        properties['dna saved name'] = self.dna_saved_name
         properties['dna saved choose'] = self.dna_choose
 
         return properties
@@ -597,6 +602,7 @@ def Body_speak(larticle_speaker, larticle_listener):
 
 def Body_save_dna(larticles_saving, larticle_saved):
     larticles_saving.body.dna_saved = larticle_saved.brain.dna
+    larticles_saving.body.dna_saved_name = larticle_saved.name
 
 
 def Body_command(larticle, commands, surounding):
@@ -604,7 +610,6 @@ def Body_command(larticle, commands, surounding):
     body = larticle.body
     body.body_drain = 0
     body.regen = 0
-    t = - body_suffer
     x, y = int(body.x + body.direction[0]), int(body.y + body.direction[1])
     r2 = surounding['north']
     body.colour = body_colour_inactive
@@ -679,7 +684,6 @@ def Body_command(larticle, commands, surounding):
         body.regenerating = False
 
     if commands['command_eat'] >= 0.5 and not body.wall:
-        t -= body_suffer
         if not body.regenerating:
             body.eating = True
             body.colour = body_colour_eating
@@ -705,7 +709,6 @@ def Body_command(larticle, commands, surounding):
         body.attacking = False
 
     if commands['command_freeze'] > 0.5 and not body.frozen and not body.wall:
-        t -= body_suffer
         if body.freezedelay == 0:
             body.freezedelay = body_freeze_delay
             body.freezing = True
@@ -715,7 +718,6 @@ def Body_command(larticle, commands, surounding):
         body.freezing = False
 
     if commands['command_give'] > 0.5 and not body.wall:
-        t -= body_suffer
         body.give_health = True
         if r2 != None:
             Body_give(larticle, r2)
@@ -741,6 +743,7 @@ def Body_command(larticle, commands, surounding):
 
     if commands['command_dna_erase'] > 0.5:
         body.dna_saved = None
+        body.dna_saved_name = None
 
     if commands['command_dna_choose'] > 0.5:
         body.dna_choose = 'other'
@@ -748,7 +751,6 @@ def Body_command(larticle, commands, surounding):
         body.dna_choose = 'self'
 
     if commands['command_split'] >= 0.5 and not body.wall:
-        t -= body_suffer
         if body.regenerating:
             if r2 == None:
                 minh = body_health_bar + body_health_bar / 10
@@ -771,12 +773,12 @@ def Body_command(larticle, commands, surounding):
                         result.append('dna_other')
 
     if commands['command_rotate_right'] > 0.5 and not body.wall and not commands['command_rotate_left'] > 0.5:
-        t -= body_suffer
+        pass
     if commands['command_rotate_left'] > 0.5 and not body.wall and not commands['command_rotate_right'] > 0.5:
-        t -= body_suffer
+        pass
 
     if commands['command_move'] > 0.5 and not body.frozen and not body.wall and not body.regenerating:
-        t -= body_suffer
+        pass
 
     larticle.body.clock_timer += 1
     larticle.body.clock = 0
@@ -794,8 +796,8 @@ def Body_command(larticle, commands, surounding):
         body.frozen = False
 
 
-    if not body.colour != [0,1,0]:
-        t *= (1 + body.health / body_health_bar)
+    if not body.colour == body_colour_inactive:
+        t = body_suffer * (1 + body.health / body_health_bar)
         body.body_drain = abs(t)
         body.health += t
 
@@ -1037,6 +1039,8 @@ class Handler():
         self.selected_larticle = None
         self.selected_neuron = None
 
+        self.frames = []
+
         print(' ')
         print(' ')
         print('Initializing Handler.')
@@ -1088,7 +1092,7 @@ def Handler_initialize(display, handler):
 
     p = -1
     for i in range(handler_amount_larticles):
-        larticle = Larticle('Begin' + str(i) + '_0')
+        larticle = Larticle('Big Bang Larticle: ' + str(i))
         Handler_place_larticle(handler, larticle)
         if i % int(handler_amount_larticles / 10) == 0:
             p += 1
@@ -1247,6 +1251,11 @@ def Handler_run(handler, autoselect=False):
     died = []
     strongest_score = 0
     strongest_name = ''
+
+    handler.suns = []
+    for i in range(constant_suns):
+        handler.suns.append([random.randrange(0, constant_grid_size), random.randrange(0, constant_grid_size)])
+
     for name in list(handler.larticles.keys()):
 
         larticle = handler.larticles[name]
@@ -1400,7 +1409,7 @@ def Handler_run(handler, autoselect=False):
                                 else:
                                     l = handler.random_larticles[0]
                                     handler.random_larticles.pop(0)
-                                    l.name += 'e' + str(handler.epoch)
+                                    l.name += 'Ancesters epoch of birth: ' + str(handler.epoch)
                             else:
                                 l = Larticle(name, larticle.brain.dna)
                             l.body.x = dx
@@ -1420,9 +1429,6 @@ def Handler_run(handler, autoselect=False):
             died.append(name)
             handler.solardeaths += 1
 
-    handler.suns = []
-    for i in range(constant_suns):
-        handler.suns.append([random.randrange(0, constant_grid_size), random.randrange(0, constant_grid_size)])
 
     for name in died:
         handler.died += 1
@@ -1490,6 +1496,7 @@ def Handler_get_larticle_properties(larticle):
 
 
 def Handler_blits_frame(display, handler, scale, x, y, gx, gy, mx=None, my=None):
+    pygame_windows_size = constant_screensize_x,constant_screensize_y
     Pygame_display = display
     wx, wy = Pygame_display.get_size()
 
@@ -1531,7 +1538,7 @@ def Handler_blits_frame(display, handler, scale, x, y, gx, gy, mx=None, my=None)
     textsurface = myfont12.render('Eaters: ' + str(handler.eaters), False, (250, 100, 100))
     Pygame_display.blit(textsurface, (wy + 170, 30))
 
-    textsurface = myfont12.render('Stupids: ' + str(handler.stupids), False, (100, 250, 100))
+    textsurface = myfont12.render('Conservatives: ' + str(handler.stupids), False, (100, 250, 100))
     Pygame_display.blit(textsurface, (wy + 170, 45))
 
     textsurface = myfont12.render('Regenerators: ' + str(handler.regenerators), False, (100, 100, 250))
@@ -1564,7 +1571,6 @@ def Handler_blits_map(display, handler, scale, x, y, gx, gy, mx=None, my=None):
         ls = str(lx) + '_' + str(ly)
 
         lx, ly = recalc_blit(lx, ly, gx, gy)
-        lx, ly = lx + 1, ly + 1
         if ls not in pos:
             pos[ls] = name
         else:
@@ -1636,8 +1642,10 @@ def Handler_blits_map(display, handler, scale, x, y, gx, gy, mx=None, my=None):
                                   int((ly + larticle.body.direction[1] / 2) * scale + y)],
                                  [int(lx * scale + x), int(ly * scale + y)], int(scale / 5))
 
+
+
     for sun in handler.suns:
-        sx, sy = recalc_grid(sun[0] + gx, sun[1] + gy)
+        sx, sy = recalc_blit(sun[0],sun[1],gx,gy)
         if int(sx * scale + x) < wy:
             pygame.draw.circle(Pygame_display, [255, 227, 15],
                                [int(sx * scale + x), int(sy * scale + y)],
@@ -1692,10 +1700,8 @@ def Handler_show_selected_larticle(display, handler, scale, x, y, gx, gy, mx=Non
     larticle = handler.selected_larticle
 
     body = larticle.body
-    brain = larticle.brain
     larticle_direction = (0, -1)
     lx, ly = recalc_blit(body.x, body.y, gx, gy)
-    lx, ly = lx + 1, ly + 1
     if 0 <= int(lx * scale + x) <= wy:
         pygame.draw.circle(Pygame_display, [211, 14, 237], [int(lx * scale + x),
                                                             int(ly * scale + y)],
@@ -1862,6 +1868,7 @@ def Handler_show_selected_larticle(display, handler, scale, x, y, gx, gy, mx=Non
 
 
 def Handler_blits_selected_larticle(display, handler, scale, x, y, gx, gy, mx=None, my=None):
+    pygame_windows_size = constant_screensize_x,constant_screensize_y
     Pygame_display = display
     wx, wy = Pygame_display.get_size()
 
@@ -1873,7 +1880,6 @@ def Handler_blits_selected_larticle(display, handler, scale, x, y, gx, gy, mx=No
         brain = selected.brain
         Brain_get_dna(selected)
         lx, ly = recalc_blit(body.x, body.y, gx, gy)
-        lx, ly = lx + 1, ly + 1
         if 0 <= int(lx * scale + x) <= wy:
             pygame.draw.circle(Pygame_display, [211, 14, 237], [int(lx * scale + x),
                                                                 int(ly * scale + y)],
@@ -1990,6 +1996,7 @@ def Handler_blits_selected_larticle(display, handler, scale, x, y, gx, gy, mx=No
 
 class Simulation():
     def __init__(self, display, clock):
+        pygame_windows_size = constant_screensize_x,constant_screensize_y
         self.initialized = False
         self.beginscale = float(pygame_windows_size[1] / (constant_grid_size + 1))
         self.scale = self.beginscale
@@ -2011,6 +2018,7 @@ class Simulation():
         self.main_button = [pygame_windows_size[0] - b, pygame_windows_size[1] - l, b, l]
 
     def Simulation_reset(self):
+        pygame_windows_size = constant_screensize_x,constant_screensize_y
         self.handler = Handler()
         self.beginscale = float(pygame_windows_size[1] / (constant_grid_size + 1))
         self.scale = self.beginscale
@@ -2018,6 +2026,7 @@ class Simulation():
     def Simulation_run(self):
         Pygame_display = self.Pygame_display
         Pygame_clock = self.Pygame_clock
+        pygame_windows_size = constant_screensize_x,constant_screensize_y
         self.initialized = True
         x = 0
         y = 0

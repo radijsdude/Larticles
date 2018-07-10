@@ -55,7 +55,8 @@ for i in range(int(len(list(brain_all_neuron_names)) / 2)):
 
 print('brain size: ', len(brain_all_neuron_names))
 
-pygame_windows_size = [1920, 1020]
+constant_screensize_x,constant_screensize_y = [1920, 1015]
+
 
 constant_grid_size = 100
 constant_suns = int(2 / 10000 * constant_grid_size ** 2 + 0.5)
@@ -71,23 +72,23 @@ handler_mutationrate = 95
 handler_amount_larticles = int(constant_grid_size ** (2) / 10)
 handler_click_error = 0.8
 handler_random_larticles_amount = 300
-handler_death_at_birth = 20  # %
+handler_death_at_birth = 2  # %
 
 neuron_learningrate = 0.5
 neurons_connectiondepth = 5
 
 body_health_bar = 500
 body_max_health = 3 * body_health_bar
-body_suffer = 0.2
-body_splitrate_red = 2
+body_suffer = 0.05
+body_splitrate_red = 1.85
 body_splitrate_attacker = 1
 body_eat_damage = body_health_bar / 2
 body_attack_damage = body_eat_damage
 body_freeztime = 3
 body_freeze_delay = 5
-body_wall_drain = body_health_bar / 50
+body_wall_drain = 1
 body_eat_health_gain = 0.8
-body_regenrate = 10
+body_regenrate = 9
 body_clock_interval = 10
 
 body_colour_newborn = [1, 1, 1]
@@ -97,8 +98,8 @@ body_colour_eating = [1, 0, 0]
 body_colour_attacking_eating = [1, 0.5, 0]
 body_colour_attacking_regenerating = [0, 0.5, 1]
 body_colour_attacking_else = [1, 1, 0]
-body_colour_wall = [0.5, 0.5, 0.5]
+body_colour_wall = [0.3, 0.3, 0.3]
 
-testing = True
+testing = False
 
 body_directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
