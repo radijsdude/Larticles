@@ -4,6 +4,8 @@ Here will come the final version of Larticles / Living-Particles, this is now th
 
 To run:
 
+-clone/download, download as zip, unzip
+
 -download python 3 (I made this in 3.5)
 
 -python pip install pygame (in command line)
