@@ -42,4 +42,4 @@ f = calculate one frame
 
 pagedown = toggle show more about the particles
 
-pageup toggle selected particle brain
+pageup = toggle selected particle brain
