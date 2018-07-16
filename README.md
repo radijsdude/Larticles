@@ -15,16 +15,27 @@ To run:
 commands:
 
 left click = select particle/neuron
+
 right click = unselect
+
 scroll = zoom map
+
 arrows = move map
+
 end = return to original zoom
+
 qsdz = move map relative
+
 r = restore relative position
+
 k = kill particle
+
 home = restart the big bang
+
 insert = pause
+
 f = calculate one frame
 
 pagedown = toggle show more about the particles
+
 pageup toggle selected particle brain
