@@ -13,6 +13,9 @@ To run:
 -and run GUI.py
 
 
+
+
+
 Commands:
 
 left click = select particle/neuron
