@@ -26,7 +26,7 @@ scroll = zoom map
 
 arrows = move map
 
-end = return to original zoom
+end = return to original zoom and map position
 
 qsdz = move map relative
 
