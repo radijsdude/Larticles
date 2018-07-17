@@ -1,8 +1,8 @@
-# Testplace-Living-Particles
+# Larticles
 
 Here will come the final version of Larticles / Living-Particles, this is now the 'finished' simulation, only some balancing, the GUI and executable need to be made.
 
-To run:
+# To run:
 
 -clone/download, download as zip, unzip
 
@@ -16,7 +16,7 @@ To run:
 
 
 
-Commands:
+# Commands:
 
 left click = select particle/neuron
 
