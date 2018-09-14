@@ -55,7 +55,7 @@ for i in range(int(len(list(brain_all_neuron_names)) / 2)):
 
 print('brain size: ', len(brain_all_neuron_names))
 
-constant_screensize_x,constant_screensize_y = [1920, 1015]
+constant_screensize_x,constant_screensize_y = [1200, 600]
 
 
 constant_grid_size = 100
@@ -69,18 +69,18 @@ brain_drain_scale = 0
 
 handler_random_mutationrate = 1
 handler_mutationrate = 95
-handler_amount_larticles = int(constant_grid_size ** (2) / 10)
+handler_amount_larticles = int(constant_grid_size ** (2) / (int(constant_grid_size / 10)))
 handler_click_error = 0.8
 handler_random_larticles_amount = 300
 handler_death_at_birth = 2  # %
 
 neuron_learningrate = 0.5
-neurons_connectiondepth = 5
+neurons_connectiondepth = 4
 
 body_health_bar = 500
 body_max_health = 3 * body_health_bar
-body_suffer = 0.05
-body_splitrate_red = 2
+body_suffer = -1
+body_splitrate_red = 1.4
 body_splitrate_attacker = 1
 body_eat_damage = body_health_bar / 2
 body_attack_damage = body_eat_damage
@@ -100,6 +100,6 @@ body_colour_attacking_regenerating = [0, 0.5, 1]
 body_colour_attacking_else = [1, 1, 0]
 body_colour_wall = [0.3, 0.3, 0.3]
 
-testing = False
+testing = True
 
 body_directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]

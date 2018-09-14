@@ -796,7 +796,7 @@ def Body_command(larticle, commands, surounding):
         body.frozen = False
 
 
-    if not body.colour == body_colour_inactive:
+    if body.attacking:
         t = body_suffer * (1 + body.health / body_health_bar)
         body.body_drain = abs(t)
         body.health += t
@@ -1382,8 +1382,7 @@ def Handler_run(handler, autoselect=False):
                             dx, dy = int(x - direction[0]), int(y - direction[1])
                             ldir = []
                             for i in body_directions:
-                                if i != direction:
-                                    ldir.append(i)
+                                ldir.append(i)
                         dx, dy = recalc_grid(dx, dy)
 
                         if t == None:
@@ -1891,7 +1890,7 @@ def Handler_blits_selected_larticle(display, handler, scale, x, y, gx, gy, mx=No
             textsurface = myfont12.render(str(prop) + ': ' + str(properties[prop]), False, (250, 250, 250))
             Pygame_display.blit(textsurface, (pygame_windows_size[1] + 20, dy + (i + 1) * 15))
 
-        r = 225
+        r = int(constant_screensize_y / 4)
         t = len(brain.neurons)
         tt = 0
         tttt = 0

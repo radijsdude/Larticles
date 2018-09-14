@@ -549,6 +549,12 @@ class Main():
                         else:
                             pygame.display.set_mode(self.display.get_size(),pygame.RESIZABLE)
 
+                    elif event.key == pygame.K_RETURN:
+                        if self.simulation == None:
+                            self.simulation = Simulation(self.display, self.clock)
+
+                        self.simulation.Simulation_run()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         mx, my = pygame.mouse.get_pos()
