@@ -796,7 +796,7 @@ def Body_command(larticle, commands, surounding):
         body.frozen = False
 
 
-    if body.attacking:
+    if body.eating:
         t = body_suffer * (1 + body.health / body_health_bar)
         body.body_drain = abs(t)
         body.health += t
