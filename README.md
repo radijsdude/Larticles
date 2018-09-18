@@ -1,3 +1,5 @@
+15/09/18 fixed some really stupid bugs
+
 # Larticles
 
 Here will come the final version of Larticles / Living-Particles, this is now the 'finished' simulation, only some balancing, the GUI and executable need to be made.
