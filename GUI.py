@@ -1,33 +1,10 @@
-import os
 
-os.environ['SDL_VIDEO_WINDOW_POS'] = '%i,%i' % (0, 30)
-
-import pygame
-import pickle
 from Simulation import Simulation
 from constants import *
 
-pygame.font.init()
-myfont = pygame.font.SysFont('Comic Sans MS', 12)
-myfont1 = pygame.font.SysFont('Comic Sans MS', 15)
-myfont2 = pygame.font.SysFont('Comic Sans MS', 50)
-myfont3 = pygame.font.SysFont('Comic Sans MS', 100)
-myfont4 = pygame.font.SysFont('Comic Sans MS', 20)
-
-wit = (255, 255, 255)
-zwart = (0, 0, 0)
-rood = (255, 0, 0)
-groen = (0, 255, 0)
-blauw = (0, 0, 255)
-geel = (255, 255, 0)
-oranje = (255, 160, 0)
-grijs = (190, 200, 200)
-
 
 class Commands():
-    def __init__(self, display,clock):
-        self.display = display
-        self.clock = clock
+    def __init__(self):
         self.helper_button = [0, 0, 70, 30]
 
         self.keys = {}
@@ -44,7 +21,6 @@ class Commands():
         self.keys['k) k'] = 'Kill selected larticle.'
         self.keys['l) a or q'] = 'Stop the program ( a or q depends on keyboard mappings).'
 
-        self.fullscreen = False
 
     def run(self):
         stop = False
@@ -65,12 +41,11 @@ class Commands():
                         pygame.quit()
                         quit()
 
-                    elif event.key == pygame.K_LCTRL:
-                        self.fullscreen = not self.fullscreen
-                        if self.fullscreen:
-                            pygame.display.set_mode(self.display.get_size(),pygame.FULLSCREEN)
-                        else:
-                            pygame.display.set_mode(self.display.get_size(),pygame.RESIZABLE)
+                    elif event.type == pygame.VIDEORESIZE:
+                        screen.x, screen.y = event.w, event.h
+
+                    elif event.key == pygame.K_f:
+                        screen.toggle_fullscreen()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -82,44 +57,42 @@ class Commands():
                         stop = True
                         break
 
-            pygame.draw.rect(self.display, zwart, [0, 0, 2000, 2000])
+            pygame.draw.rect(screen.display, zwart, [0, 0, 2000, 2000])
 
-            pygame.draw.rect(self.display, rood, self.helper_button)
-            textsurface = myfont4.render('Helper', False, (0, 0, 0))
-            self.display.blit(textsurface, (self.helper_button))
+            pygame.draw.rect(screen.display, rood, self.helper_button)
+            textsurface = myfont10.render('Helper', False, (0, 0, 0))
+            screen.display.blit(textsurface, (self.helper_button))
 
             x0 = 200
             y0 = 200
             t = 30
             i = 0
             for k in list(sorted(self.keys.keys())):
-                textsurface = myfont4.render(k + ': ' + self.keys[k], False, (255, 255, 255))
-                self.display.blit(textsurface, [x0, y0 + t * i])
+                textsurface = myfont10.render(k + ': ' + self.keys[k], False, (255, 255, 255))
+                screen.display.blit(textsurface, [x0, y0 + t * i])
                 i += 1
 
-            textsurface = myfont4.render('Thomas Ludo Maarten Arys', False, (255, 255, 255))
-            self.display.blit(textsurface, [100, 100])
+            textsurface = myfont10.render('Thomas Ludo Maarten Arys', False, (255, 255, 255))
+            screen.display.blit(textsurface, [100, 100])
 
-            textsurface = myfont4.render('This simulation needs a 1900 * 1080 resolution, otherwise contact:', False,
+            textsurface = myfont10.render('This simulation needs a 1900 * 1080 resolution, otherwise contact:', False,
                                          (255, 255, 255))
-            self.display.blit(textsurface, [100, 70])
+            screen.display.blit(textsurface, [100, 70])
 
             pygame.display.update()
-            self.clock.tick(10)
+            screen.clock.tick(10)
 
 
 class Helper():
-    def __init__(self, display,clock):
-        self.display = display
-        self.clock = clock
+    def __init__(self):
 
-        self.commands = Commands(self.display,self.clock)
+        self.commands = Commands()
         self.commands_button_pos = [200, 200, 300, 100]
         self.commands_button_tekst = 'Commands'
         self.commands_button_kleur = [255, 0, 0]
         self.commands_tekst_kleur = [0, 0, 0]
 
-        self.options = Options(self.display,self.clock)
+        self.options = Options()
         self.options_button_pos = [700, 200, 300, 100]
         self.options_button_tekst = 'Options'
         self.options_button_kleur = [255, 0, 0]
@@ -128,7 +101,6 @@ class Helper():
 
         self.main_button = [0, 0, 70, 30]
 
-        self.fullscreen = False
 
     def run(self):
         stop = False
@@ -143,19 +115,19 @@ class Helper():
                     pygame.quit()
                     quit()
 
-                if event.type == pygame.KEYDOWN:
+
+                elif event.type == pygame.VIDEORESIZE:
+                    screen.x,screen.y = event.w,event.h
+
+                elif event.type == pygame.KEYDOWN:
 
                     if event.key == pygame.K_ESCAPE:
                         stop = True
                         pygame.quit()
                         quit()
 
-                    elif event.key == pygame.K_LCTRL:
-                        self.fullscreen = not self.fullscreen
-                        if self.fullscreen:
-                            pygame.display.set_mode(self.display.get_size(),pygame.FULLSCREEN)
-                        else:
-                            pygame.display.set_mode(self.display.get_size(),pygame.RESIZABLE)
+                    elif event.key == pygame.K_f:
+                        screen.toggle_fullscreen()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -177,22 +149,22 @@ class Helper():
                                             1] < my < self.main_button[1] + self.main_button[3]:
                     stop = True
 
-            self.display.fill(zwart)
+            screen.display.fill(zwart)
 
-            pygame.draw.rect(self.display, self.commands_button_kleur, self.commands_button_pos)
-            textsurface = myfont2.render(self.commands_button_tekst, False, self.commands_tekst_kleur)
-            self.display.blit(textsurface, self.commands_button_pos)
+            pygame.draw.rect(screen.display, self.commands_button_kleur, self.commands_button_pos)
+            textsurface = myfont10.render(self.commands_button_tekst, False, self.commands_tekst_kleur)
+            screen.display.blit(textsurface, self.commands_button_pos)
 
-            pygame.draw.rect(self.display, self.options_button_kleur, self.options_button_pos)
-            textsurface = myfont2.render(self.options_button_tekst, False, self.options_tekst_kleur)
-            self.display.blit(textsurface, self.options_button_pos)
+            pygame.draw.rect(screen.display, self.options_button_kleur, self.options_button_pos)
+            textsurface = myfont10.render(self.options_button_tekst, False, self.options_tekst_kleur)
+            screen.display.blit(textsurface, self.options_button_pos)
 
-            pygame.draw.rect(self.display, [255,0,0], self.main_button)
-            textsurface = myfont4.render('Main', False, [0,0,0])
-            self.display.blit(textsurface, self.main_button)
+            pygame.draw.rect(screen.display, [255,0,0], self.main_button)
+            textsurface = myfont10.render('Main', False, [0,0,0])
+            screen.display.blit(textsurface, self.main_button)
 
             pygame.display.update()
-            self.clock.tick(10)
+            screen.clock.tick(10)
 
 
 class Options_File():
@@ -203,9 +175,7 @@ class Options_File():
         self.suns = 2
 
 class Options():
-    def __init__(self,display,clock):
-        self.display = display
-        self.clock = clock
+    def __init__(self):
 
         self.size = 100
         self.size_button_pos = [400, 300, 700, 100]
@@ -236,8 +206,6 @@ class Options():
         self.default['size'] = 100
         self.default['suns'] = 2
 
-        self.fullscreen = False
-
     def set_default(self):
         self.size = self.default['size']
         self.suns = self.default['suns']
@@ -255,18 +223,17 @@ class Options():
                     pygame.quit()
                     quit()
 
+                elif event.type == pygame.VIDEORESIZE:
+                    screen.x,screen.y = event.w,event.h
+
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         stop = True
                         pygame.quit()
                         quit()
 
-                    if event.key == pygame.K_LCTRL:
-                        self.fullscreen = not self.fullscreen
-                        if self.fullscreen:
-                            pygame.display.set_mode(self.display.get_size(),pygame.FULLSCREEN)
-                        else:
-                            pygame.display.set_mode(self.display.get_size(),pygame.RESIZABLE)
+                    if event.key == pygame.K_f:
+                        screen.toggle_fullscreen()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -275,21 +242,21 @@ class Options():
             if mx != None and my != None:
                 if self.size_button_pos[0] < mx < self.size_button_pos[0] + self.size_button_pos[
                     2] and self.size_button_pos[1] < my < self.size_button_pos[1] + self.size_button_pos[3]:
-                    user = User_input(self.display,self.clock,'Grid size?',1000,100,'all')
+                    user = User_input('Grid size?',1000,100,'all')
                     s = user.run()
                     if s != '':
                         self.size = int(s)
                         
                 elif self.suns_button_pos[0] < mx < self.suns_button_pos[0] + self.suns_button_pos[
                     2] and self.suns_button_pos[1] < my < self.suns_button_pos[1] + self.suns_button_pos[3]:
-                    user = User_input(self.display,self.clock,'Grid suns?',1000,100,'all')
+                    user = User_input('Grid suns?',1000,100,'all')
                     s = user.run()
                     if s != '':
                         self.suns = int(s)
                 
                 elif self.amount_larticles_button_pos[0] < mx < self.amount_larticles_button_pos[0] + self.amount_larticles_button_pos[
                     2] and self.amount_larticles_button_pos[1] < my < self.amount_larticles_button_pos[1] + self.amount_larticles_button_pos[3]:
-                    user = User_input(self.display,self.clock,'Grid amount_larticles?',1000,100,'all')
+                    user = User_input('Grid amount_larticles?',1000,100,'all')
                     s = user.run()
                     if s != '':
                         self.amount_larticles = int(s)
@@ -304,39 +271,36 @@ class Options():
                                             1] < my < self.main_button[1] + self.main_button[3]:
                     stop = True
 
+            screen.display.fill(zwart)
 
-            self.display.fill(zwart)
+            pygame.draw.rect(screen.display, self.size_button_kleur, self.size_button_pos)
+            textsurface = myfont10.render('Size: ' + str(self.size), False, self.size_tekst_kleur)
+            screen.display.blit(textsurface, self.size_button_pos)
 
-            pygame.draw.rect(self.display, self.size_button_kleur, self.size_button_pos)
-            textsurface = myfont2.render('Size: ' + str(self.size), False, self.size_tekst_kleur)
-            self.display.blit(textsurface, self.size_button_pos)
+            pygame.draw.rect(screen.display, self.suns_button_kleur, self.suns_button_pos)
+            textsurface = myfont10.render('Suns: ' + str(self.suns), False, self.suns_tekst_kleur)
+            screen.display.blit(textsurface, self.suns_button_pos)
 
-            pygame.draw.rect(self.display, self.suns_button_kleur, self.suns_button_pos)
-            textsurface = myfont2.render('Suns: ' + str(self.suns), False, self.suns_tekst_kleur)
-            self.display.blit(textsurface, self.suns_button_pos)
+            pygame.draw.rect(screen.display, self.amount_larticles_button_kleur, self.amount_larticles_button_pos)
+            textsurface = myfont10.render('amount_larticles: ' + str(self.amount_larticles), False, self.amount_larticles_tekst_kleur)
+            screen.display.blit(textsurface, self.amount_larticles_button_pos)
 
-            pygame.draw.rect(self.display, self.amount_larticles_button_kleur, self.amount_larticles_button_pos)
-            textsurface = myfont2.render('amount_larticles: ' + str(self.amount_larticles), False, self.amount_larticles_tekst_kleur)
-            self.display.blit(textsurface, self.amount_larticles_button_pos)
+            pygame.draw.rect(screen.display, self.default_button_kleur, self.default_button_pos)
+            textsurface = myfont10.render(self.default_button_tekst, False, self.default_tekst_kleur)
+            screen.display.blit(textsurface, self.default_button_pos)
 
-            pygame.draw.rect(self.display, self.default_button_kleur, self.default_button_pos)
-            textsurface = myfont2.render(self.default_button_tekst, False, self.default_tekst_kleur)
-            self.display.blit(textsurface, self.default_button_pos)
-
-            pygame.draw.rect(self.display, [255, 0, 0], self.main_button)
-            textsurface = myfont4.render('Main', False, [0, 0, 0])
-            self.display.blit(textsurface, self.main_button)
+            pygame.draw.rect(screen.display, [255, 0, 0], self.main_button)
+            textsurface = myfont10.render('Main', False, [0, 0, 0])
+            screen.display.blit(textsurface, self.main_button)
 
             pygame.display.update()
-            self.clock.tick(10)
+            screen.clock.tick(10)
 
 
 
 
 class User_input():
-    def __init__(self,display,clock,question,x,y,tipe='all'):
-        self.display = display
-        self.clock = clock
+    def __init__(self,question,x,y,tipe='all'):
         self.x,self.y,self.b,self.l = x,y,300,200
         self.rect = [self.x,self.y,self.b,self.l]
         self.question = question
@@ -351,7 +315,6 @@ class User_input():
         self.ok_button_kleur = [0, 255, 0]
         self.ok_tekst_kleur = [0, 0, 0]
 
-        self.fullscreen = False
     
     def get_number(self,key):
         response = -13
@@ -441,13 +404,8 @@ class User_input():
                             self.response.pop(-1)
                     elif event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN:
                         stop = True
-                    elif event.key == pygame.K_LCTRL:
-                        self.fullscreen = not self.fullscreen
-                        if self.fullscreen:
-                            pygame.display.set_mode(self.display.get_size(),pygame.FULLSCREEN)
-                        else:
-                            pygame.display.set_mode(self.display.get_size(),pygame.RESIZABLE)
-
+                    elif event.key == pygame.K_f:
+                        screen.toggle_fullscreen()
 
 
 
@@ -460,23 +418,23 @@ class User_input():
                     2] and self.ok_button_pos[1] < my < self.ok_button_pos[1] + self.ok_button_pos[3]:
                     stop = True
 
-            pygame.draw.rect(self.display, [0, 0, 0], self.rect)
-            pygame.draw.rect(self.display,[255,255,255],self.rect,5)
+            pygame.draw.rect(screen.display, [0, 0, 0], self.rect)
+            pygame.draw.rect(screen.display,[255,255,255],self.rect,5)
 
-            pygame.draw.rect(self.display, self.ok_button_kleur, self.ok_button_pos)
-            textsurface = myfont1.render(self.ok_button_tekst, False, self.ok_tekst_kleur)
-            self.display.blit(textsurface, self.ok_button_pos)
+            pygame.draw.rect(screen.display, self.ok_button_kleur, self.ok_button_pos)
+            textsurface = myfont10.render(self.ok_button_tekst, False, self.ok_tekst_kleur)
+            screen.display.blit(textsurface, self.ok_button_pos)
 
-            textsurface = myfont1.render(self.question, False, [255, 255, 255])
-            self.display.blit(textsurface, [self.x + 10, self.y])
+            textsurface = myfont10.render(self.question, False, [255, 255, 255])
+            screen.display.blit(textsurface, [self.x + 10, self.y])
 
             print(self.response)
             s = 'User: ' + ''.join(self.response)
-            textsurface = myfont1.render(s, False, [255,255,255])
-            self.display.blit(textsurface, [self.x + 10, self.y + 50])
+            textsurface = myfont10.render(s, False, [255,255,255])
+            screen.display.blit(textsurface, [self.x + 10, self.y + 50])
 
             pygame.display.update()
-            self.clock.tick(10)
+            screen.clock.tick(10)
 
         s = ''.join(self.response)
         return s
@@ -485,19 +443,12 @@ class User_input():
 
 class Main():
     def __init__(self):
-
-
-        pygame.init()
-        self.display = pygame.display.set_mode([constant_screensize_x,constant_screensize_y],pygame.RESIZABLE)
-        pygame.display.set_caption('Larticles')
-        self.clock = pygame.time.Clock()
-
         if os.path.exists('Larticles_Options.pickle'):
             file = open('Larticles_Options.pickle', 'rb')
             self.options_file = pickle.load(file)
             file.close()
         else:
-            self.options = Options(self.display,self.clock)
+            self.options = Options()
 
         self.size = self.options.size
         self.suns = self.options.suns
@@ -508,19 +459,21 @@ class Main():
         self.simulation_button_kleur = [255, 0, 0]
         self.simulation_tekst_kleur = [0, 0, 0]
 
-        self.options = Options(self.display, self.clock)
+        self.options = Options()
         self.options_button_pos = [700, 200, 300, 100]
         self.options_button_tekst = 'Options'
         self.options_button_kleur = [100, 255, 100]
         self.options_tekst_kleur = [0, 0, 0]
 
-        self.helper = Helper(self.display, self.clock)
+        self.helper = Helper()
         self.helper_button_pos = [1200, 200, 300, 100]
         self.helper_button_tekst = 'Help'
         self.helper_button_kleur = [100, 100, 255]
         self.helper_tekst_kleur = [0, 0, 0]
 
-        self.fullscreen = False
+        if testing:
+            self.simulation = Simulation()
+            self.simulation.Simulation_run()
 
     def run(self):
         stop = False
@@ -542,16 +495,11 @@ class Main():
                         pygame.quit()
                         quit()
 
-                    elif event.key == pygame.K_LCTRL:
-                        self.fullscreen = not self.fullscreen
-                        if self.fullscreen:
-                            pygame.display.set_mode(self.display.get_size(),pygame.FULLSCREEN)
-                        else:
-                            pygame.display.set_mode(self.display.get_size(),pygame.RESIZABLE)
-
+                    elif event.key == pygame.K_f:
+                        screen.toggle_fullscreen()
                     elif event.key == pygame.K_RETURN:
                         if self.simulation == None:
-                            self.simulation = Simulation(self.display, self.clock)
+                            self.simulation = Simulation()
 
                         self.simulation.Simulation_run()
 
@@ -560,14 +508,14 @@ class Main():
                         mx, my = pygame.mouse.get_pos()
 
 
-            self.display.fill(zwart)
+            screen.display.fill(zwart)
 
             if mx != None and my != None:
                 if self.simulation_button_pos[0] < mx < self.simulation_button_pos[0] + self.simulation_button_pos[
                     2] and self.simulation_button_pos[1] < my < self.simulation_button_pos[1] + self.simulation_button_pos[3]:
 
                     if self.simulation == None:
-                        self.simulation = Simulation(self.display,self.clock)
+                        self.simulation = Simulation()
 
                     self.simulation.Simulation_run()
 
@@ -583,26 +531,26 @@ class Main():
                     self.size = self.options.size
 
 
-            pygame.draw.rect(self.display, self.simulation_button_kleur, self.simulation_button_pos)
+            pygame.draw.rect(screen.display, self.simulation_button_kleur, self.simulation_button_pos)
             if self.simulation == None:
-                textsurface = myfont2.render(self.simulation_button_tekst, False, self.simulation_tekst_kleur)
-                self.display.blit(textsurface, self.simulation_button_pos)
+                textsurface = myfont10.render(self.simulation_button_tekst, False, self.simulation_tekst_kleur)
+                screen.display.blit(textsurface, self.simulation_button_pos)
             else:
-                textsurface = myfont2.render('Resume', False, self.simulation_tekst_kleur)
-                self.display.blit(textsurface, self.simulation_button_pos)
+                textsurface = myfont10.render('Resume', False, self.simulation_tekst_kleur)
+                screen.display.blit(textsurface, self.simulation_button_pos)
 
 
-            pygame.draw.rect(self.display, self.helper_button_kleur, self.helper_button_pos)
-            textsurface = myfont2.render(self.helper_button_tekst, False, self.helper_tekst_kleur)
-            self.display.blit(textsurface, self.helper_button_pos)
+            pygame.draw.rect(screen.display, self.helper_button_kleur, self.helper_button_pos)
+            textsurface = myfont10.render(self.helper_button_tekst, False, self.helper_tekst_kleur)
+            screen.display.blit(textsurface, self.helper_button_pos)
 
-            pygame.draw.rect(self.display, self.options_button_kleur, self.options_button_pos)
-            textsurface = myfont2.render(self.options_button_tekst, False, self.options_tekst_kleur)
-            self.display.blit(textsurface, self.options_button_pos)
+            pygame.draw.rect(screen.display, self.options_button_kleur, self.options_button_pos)
+            textsurface = myfont10.render(self.options_button_tekst, False, self.options_tekst_kleur)
+            screen.display.blit(textsurface, self.options_button_pos)
 
 
             pygame.display.update()
-            self.clock.tick(10)
+            screen.clock.tick(10)
 
 
 m = Main()
