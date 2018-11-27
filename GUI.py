@@ -552,7 +552,7 @@ class Main():
             pygame.display.update()
             screen.clock.tick(10)
 
-
+screen.initialize()
 m = Main()
 m.run()
 pygame.quit()

@@ -42,10 +42,6 @@ class Axon():
         self.neuron = neuron
         self.weight = random.randrange(-neuron_weight_size, neuron_weight_size + 1) / neuron_weight_scale
 
-    def __repr__(self):
-        return 'weight: ' + str(self.weight) + ' * potential: ' + str(self.neuron.potential)
-
-
 def Dendrite_set_weight(axon, weight):
     axon.weight = weight
 
@@ -63,11 +59,6 @@ class Neuron():
         self.name = name
         self.dendrites = {}
         self.potential = 0
-        self.error = 0
-
-    def __repr__(self):
-        return str(self.name) + ' => ' + str(self.potential) + ' <= ' + str(self.dendrites)
-
 
 def Neuron_set_potential(neuron, potential):
     neuron.potential = potential
@@ -226,6 +217,8 @@ class Body():
 
         self.state = 0
 
+        self.place_counter = 0
+
 def Body_get_properties(body):
     properties = {}
     properties['pos'] = body.x, body.y
@@ -333,14 +326,6 @@ def Body_get_surounding_pos(x, y, direction):
             'northnortheast': northnortheast, 'northnortheasteast': northnortheasteast}
 
 
-def check_looking(larticle1, larticle2):
-    t1 = int(larticle1.body.x + larticle1.body.direction[0]) == larticle2.body.x
-    t2 = int(larticle1.body.y + larticle1.body.direction[1]) == larticle2.body.y
-    t3 = int(larticle1.body.x + larticle1.body.direction[0]) == larticle1.body.x
-    t4 = int(larticle2.body.y + larticle2.body.direction[1]) == larticle1.body.y
-    t = t1 and t2 and t3 and t4
-    return t
-
 
 def Body_sense(surounding):
     potentials = {}
@@ -367,20 +352,23 @@ def See(larticle_seeing, larticle_seen, none=False):
     d['see_orientation'] = 1 / 2
     # r g b health happyness state distance
     if not none:
-        d['see_red'] = larticle_seen.body.colour[0]
-        d['see_green'] = larticle_seen.body.colour[1]
-        d['see_blue'] = larticle_seen.body.colour[2]
-        d['see_health'] = larticle_seen.body.health / larticle_seeing.body.health
-        d['see_happyness'] = larticle_seen.body.happy
-        d['see_state'] = larticle_seen.body.state
-        d['see_frozen'] = int(larticle_seen.body.frozen)
-        d['see_attacking'] = int(larticle_seen.body.attacking)
-        if int(-larticle_seen.body.direction[0]) == int(larticle_seeing.body.direction[0]):
-            if int(-larticle_seen.body.direction[1]) == int(larticle_seeing.body.direction[1]):
+        bodyseeing = larticle_seeing.body
+        bodyseen = larticle_seen.body
+        colour = bodyseen.colour
+        d['see_red'] = colour[0]
+        d['see_green'] = colour[1]
+        d['see_blue'] = colour[2]
+        d['see_health'] = bodyseen.health / bodyseeing.health
+        d['see_happyness'] = bodyseen.happy
+        d['see_state'] = bodyseen.state
+        d['see_frozen'] = int(bodyseen.frozen)
+        d['see_attacking'] = int(bodyseen.attacking)
+        if int(-bodyseen.direction[0]) == int(bodyseeing.direction[0]):
+            if int(-bodyseen.direction[1]) == int(bodyseeing.direction[1]):
                 d['see_looking'] = 1
                 d['see_orientation'] = 0
-        if int(larticle_seen.body.direction[0]) == int(larticle_seeing.body.direction[0]):
-            if int(larticle_seen.body.direction[1]) == int(larticle_seeing.body.direction[1]):
+        if int(bodyseen.direction[0]) == int(bodyseeing.direction[0]):
+            if int(bodyseen.direction[1]) == int(bodyseeing.direction[1]):
                 d['see_orientation'] = 1
 
     return d
@@ -466,8 +454,8 @@ def Body_regenerate(larticle, surounding):
 
 
 def Body_eat(larticle_win, larticle_lose):
-    c = body_eat_health_gain * body_eat_damage * (1 / 2 + larticle_win.body.health / (2 * body_health_bar))
     if not larticle_lose.body.wall:
+        c = body_eat_health_gain * body_eat_damage * (1 / 2 + larticle_win.body.health / (2 * body_health_bar))
         h = larticle_lose.body.health
         if h > c:
             larticle_win.body.health += c
@@ -512,6 +500,26 @@ def Body_speak(larticle_speaker, larticle_listener):
     larticle_listener.body.sound_1 += larticle_speaker.body.voice_1 * scale
     larticle_listener.body.sound_2 += larticle_speaker.body.voice_2 * scale
 
+def Body_place_left(larticle_lose,larticle_win):
+    d = Body_rotate_left(larticle_win.body.direction)
+    x0,y0 = larticle_lose.body.x,larticle_lose.body.y
+    x1 = larticle_win.body.x + d[0]
+    y1 = larticle_win.body.y + d[1]
+    x1,y1 = recalc_grid(x1,y1)
+    larticle_lose.body.x = x1
+    larticle_lose.body.y = y1
+    larticle_win.body.place_counter = body_place_counter
+    return str(x0) + '_' + str(y0),str(x1) + '_' + str(y1)
+def Body_place_right(larticle_lose,larticle_win):
+    d = Body_rotate_right(larticle_win.body.direction)
+    x0,y0 = larticle_lose.body.x,larticle_lose.body.y
+    x1 = larticle_win.body.x + d[0]
+    y1 = larticle_win.body.y + d[1]
+    x1,y1 = recalc_grid(x1,y1)
+    larticle_lose.body.x = x1
+    larticle_lose.body.y = y1
+    larticle_win.body.place_counter = body_place_counter
+    return str(x0) + '_' + str(y0),str(x1) + '_' + str(y1)
 
 def Body_command(larticle, commands, surounding):
     result = []
@@ -564,7 +572,7 @@ def Body_command(larticle, commands, surounding):
     else:
         body.regenerating = False
 
-    if commands['command_eat'] >= 0.5 and not body.wall:
+    if commands['command_eat'] > 0.5 and not body.wall:
         if not body.regenerating:
             body.eating = True
             body.colour = body_colour_eating
@@ -619,7 +627,7 @@ def Body_command(larticle, commands, surounding):
         body.colour = body_colour_wall
 
 
-    if commands['command_split'] >= 0.5 and not body.wall:
+    if commands['command_split'] > 0.5 and not body.wall:
         if body.regenerating:
             if r2 == None:
                 minh = body_health_bar + body_health_bar / 10
@@ -646,6 +654,9 @@ def Body_command(larticle, commands, surounding):
     if body.freezedelay > 0:
         body.freezedelay -= 1
 
+    if body.place_counter > 0:
+        body.place_counter -= 1
+
     if body.freeztime > 0:
         body.frozen = True
         body.freeztime -= 1
@@ -655,7 +666,7 @@ def Body_command(larticle, commands, surounding):
 
     t = body_suffer
     if body.colour == body_colour_inactive:
-        t /= 4
+        t /= 3
     if body.regenerating:
         t = 0
     body.body_drain = abs(t)
@@ -706,7 +717,6 @@ def Body_to_brain(larticle, surounding):
         result[i] = others[i]
     larticle.body.sound_1 = 0
     larticle.body.sound_2 = 0
-    larticle.body.sound_3 = 0
     larticle.body.killer = 0
     return result
 
@@ -806,10 +816,8 @@ class Larticle():
         self.body = Body()
         self.brain = Brain(dna)
         self.time_alive = 0
-        self.brain_drain = (len(self.brain.dna)) * brain_drain_scale
+        self.brain_drain = (len(self.brain.dna)) / brain_drain_scale
         self.splits = 0
-        self.memory = []
-        self.previous_memory = []
         self.generation = 0
 
 
@@ -822,12 +830,12 @@ def Larticle_simulate(larticle, surounding):
 
 def Larticle_doe(larticle, forbody, surounding):
     r = Body_command(larticle, forbody, surounding)
-
     larticle.body.health -= larticle.brain_drain
     return r
 
 
 def Larticle_mutate(larticle):
+    Brain_mutate(larticle)
     Brain_mutate(larticle)
 
 
@@ -837,7 +845,7 @@ def Larticle_score(larticle):
 
 
 class Handler():
-    def __init__(self, display=None):
+    def __init__(self):
         print(' ')
         print(' ')
         print('Initializing Handler Constants.')
@@ -967,6 +975,7 @@ def Handler_initialize(handler):
         screen.display.blit(textsurface, t)
         pygame.display.update()
 
+
     print(' ')
     print(' ')
     print('Creating random Larticles')
@@ -981,10 +990,29 @@ def Handler_initialize(handler):
     print(' ')
     print(' ')
 
+    Handler_remove_larticles(handler)
+
     print(' ')
     print('Handler Initializing Succesfull.')
     print(' ')
 
+def Handler_remove_larticles(handler):
+    print(' ')
+    print('Removing Larticles.')
+    print(' ')
+    Handler_run(handler)
+    excessives = []
+    for name in handler.larticles:
+        if handler.larticles[name].body.colour == body_colour_wall and False:
+            excessives.append(name)
+        elif handler.larticles[name].body.colour == body_colour_inactive and False:
+            excessives.append(name)
+    for name in excessives:
+        handler.larticles.pop(name)
+    Handler_get_all_positions(handler)
+    print(' ')
+    print('Removing Larticles Done.')
+    print(' ')
 
 def Handler_get_all_positions(handler):
     pos = {}
@@ -1164,6 +1192,10 @@ def Handler_run(handler, autoselect=False):
 
                 result = Larticle_doe(larticle, forbody, surounding)
 
+                if not body.regenerating:
+                    body.health -= larticle.brain_drain
+
+
                 if 'split' in result:
 
                     if body.regenerating:
@@ -1186,7 +1218,8 @@ def Handler_run(handler, autoselect=False):
                         dx, dy = int(x - direction[0]), int(y - direction[1])
                         ldir = []
                         for i in body_directions:
-                            ldir.append(i)
+                            if i != direction:
+                                ldir.append(i)
 
                     dx, dy = recalc_grid(dx, dy)
 
@@ -1550,6 +1583,9 @@ def Handler_show_selected_larticle(handler, scale, x, y, gx, gy, mx=None, my=Non
 
     if handler.selected_neuron != None:
         pygame.draw.circle(screen.display,paars,neuronpositions[handler.selected_neuron.name],neuronradius * 2, neuronradius)
+        textsurface = myfont12.render(str(handler.selected_neuron.name), False, wit)
+        screen.display.blit(textsurface, (screen.x - int((screen.x - screen.y)/2),screen.y - 20 ))
+
         connections = []
         connectionstemp = []
         connectionstemp += Neuron_get_connections(handler.selected_neuron)
@@ -1562,7 +1598,10 @@ def Handler_show_selected_larticle(handler, scale, x, y, gx, gy, mx=None, my=Non
 
         for name1,name2 in connections:
             pygame.draw.line(screen.display,paars,neuronpositions[name1],neuronpositions[name2],neuronradius)
-
+            textsurface = myfont15.render(str(' '.join(name1.split('_')[1:])), False, wit)
+            screen.display.blit(textsurface, (neuronpositions[name1], neuronpositions[name1]))
+            textsurface = myfont15.render(str(' '.join(name2.split('_')[1:])), False, wit)
+            screen.display.blit(textsurface, (neuronpositions[name2], neuronpositions[name2]))
 
 
 
@@ -1705,8 +1744,12 @@ def Handler_blits_selected_larticle(display, handler, scale, x, y, gx, gy, mx=No
 class Simulation():
     def __init__(self):
         self.initialized = False
+        print('')
+        print('Initializing Simulation.')
+        print('')
+
         self.set_scale()
-        self.handler = Handler(screen.display)
+        self.handler = Handler()
         self.saved_larticles = {}
         self.time0 = time.time()
         self.running = True
@@ -1716,6 +1759,9 @@ class Simulation():
         self.previous_handler = None
         self.starts = 0
         self.map_only = False
+        print('')
+        print('Initializing Simulation Succes.')
+        print('')
 
     def set_scale(self):
         if screen.x > screen.y:
@@ -1756,8 +1802,8 @@ class Simulation():
         while not stop:
 
             if len(self.handler.larticles) <= 0:
+                print('No more larticles.')
                 self.handler = Handler()
-                Handler_initialize(self.handler)
                 self.starts += 1
 
             if len(self.handler.random_larticles) <= handler_random_larticles_amount and not checking:

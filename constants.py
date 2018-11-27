@@ -9,7 +9,8 @@ body_base_commands = ['command_move',
 body_attack_commands = ['command_eat',
                         'command_attack',
                         'command_freeze',
-                        'command_wall_1', 'command_wall_2']
+                        'command_wall_1','command_wall_2'
+                        ]
 body_memory_commands = ['command_memory_1_set', 'command_memory_1_value', 'command_memory_1_erase']
 body_speak_commands = ['command_voice_speak', 'command_voice_1_value', 'command_voice_2_value']
 
@@ -50,18 +51,12 @@ body_perception = sight + sense + surounding_sense
 brain_all_neuron_names = body_commands + body_perception
 body_hidden_names = []
 
-for i in range(10):
+for i in range(20):
     body_hidden_names.append('Hidden_' + str(i))
 brain_all_neuron_names += body_hidden_names
 
 print('brain size: ', len(brain_all_neuron_names))
 
-
-brain_min_dna_length = int(2)
-brain_max_dna_length = int(len(brain_all_neuron_names)/1.5)
-neuron_weight_size = 100
-neuron_weight_scale = 10
-brain_drain_scale = 0
 
 handler_random_mutationrate = 2
 handler_mutationrate = 90
@@ -129,6 +124,8 @@ paars = [211, 14, 237]
 
 class Screen():
     def __init__(self):
+        pass
+    def initialize(self):
         pygame.init()
         self.display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.x, self.y = self.display.get_size()
@@ -151,16 +148,14 @@ screen = Screen()
 
 constant_grid_size = 100
 constant_suns = int(2 / 10000 * constant_grid_size ** 2 + 0.5)
-handler_amount_larticles = int(constant_grid_size ** 2 / 10)
-
-
+handler_amount_larticles = int(constant_grid_size ** 2 / 8)
 
 body_health_bar = 500
 body_max_health = 2 * body_health_bar
 body_suffer = -body_health_bar/(constant_grid_size)
-body_splitrate_red = 1
+body_splitrate_red = 1.2
 body_splitrate_attacker = 1
-body_eat_damage = body_health_bar / 4
+body_eat_damage = body_health_bar / 5
 body_attack_damage = body_eat_damage
 body_freeztime = 3
 body_freeze_delay = 5
@@ -168,6 +163,12 @@ body_wall_drain = 1
 body_eat_health_gain = 0.6
 body_regenrate = 3
 body_clock_interval = 10
+
+brain_min_dna_length = int(2)
+brain_max_dna_length = int(len(brain_all_neuron_names))
+neuron_weight_size = 100
+neuron_weight_scale = 10
+brain_drain_scale = 100 * len(brain_all_neuron_names)
 
 
 
