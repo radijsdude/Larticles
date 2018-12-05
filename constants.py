@@ -24,7 +24,7 @@ body_commands = body_base_commands + body_attack_commands \
 sight = ['see_red', 'see_green', 'see_blue', 'see_health', 'see_happyness',
          'see_state', 'see_frozen', 'see_attacking',
          'see_distance_0', 'see_distance_1', 'see_distance_2',
-         'see_looking', 'see_orientation']
+         'see_orientation']
 ddddd = ['north', 'south',
          'west', 'westwest', 'east', 'easteast',
          'northwest', 'northwestwest',
@@ -41,7 +41,7 @@ sense = [
     'sense_memory_1', 'sense_health',
     'sense_sound_1', 'sense_sound_2',
     'sense_happy', 'sense_killed', 'sense_state',
-    'sense_alive_0', 'sense_alive_1', 'sense_alive_2',
+    'sense_alive_0', 'sense_alive_1',
     'sense_frozen',
     'sense_pos_x', 'sense_pos_y',
     'sense_clock', 'sense_reflect_1']
@@ -51,7 +51,7 @@ body_perception = sight + sense + surounding_sense
 brain_all_neuron_names = body_commands + body_perception
 body_hidden_names = []
 
-for i in range(20):
+for i in range(10):
     body_hidden_names.append('Hidden_' + str(i))
 brain_all_neuron_names += body_hidden_names
 
@@ -148,12 +148,12 @@ screen = Screen()
 
 constant_grid_size = 100
 constant_suns = int(2 / 10000 * constant_grid_size ** 2 + 0.5)
-handler_amount_larticles = int(constant_grid_size ** 2 / 8)
+handler_amount_larticles = int(constant_grid_size ** 2 / 10)
 
 body_health_bar = 500
 body_max_health = 2 * body_health_bar
 body_suffer = -body_health_bar/(constant_grid_size)
-body_splitrate_red = 1.2
+body_splitrate_red = 1.3
 body_splitrate_attacker = 1
 body_eat_damage = body_health_bar / 5
 body_attack_damage = body_eat_damage

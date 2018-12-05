@@ -348,7 +348,6 @@ def See(larticle_seeing, larticle_seen, none=False):
     d['see_state'] = 0
     d['see_frozen'] = 0
     d['see_attacking'] = 0
-    d['see_looking'] = 0
     d['see_orientation'] = 1 / 2
     # r g b health happyness state distance
     if not none:
@@ -365,7 +364,6 @@ def See(larticle_seeing, larticle_seen, none=False):
         d['see_attacking'] = int(bodyseen.attacking)
         if int(-bodyseen.direction[0]) == int(bodyseeing.direction[0]):
             if int(-bodyseen.direction[1]) == int(bodyseeing.direction[1]):
-                d['see_looking'] = 1
                 d['see_orientation'] = 0
         if int(bodyseen.direction[0]) == int(bodyseeing.direction[0]):
             if int(bodyseen.direction[1]) == int(bodyseeing.direction[1]):
@@ -701,7 +699,6 @@ def Body_to_brain(larticle, surounding):
     sound = voice_scale([larticle.body.sound_1, larticle.body.sound_2])
     others = {'sense_health': larticle.body.health / body_health_bar, 'sense_happy': larticle.body.happy,
               'sense_alive_0': 1, 'sense_alive_1': larticle.body.clock_timer % 2,
-              'sense_alive_2': int(larticle.body.clock_timer % 3 == 0),
               'sense_memory_1': larticle.body.memory_1,
               'sense_sound_1': sound[0], 'sense_sound_2': sound[1],
               'sense_killed': larticle.body.killer, 'sense_frozen': frozen,
